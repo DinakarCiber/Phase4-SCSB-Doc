@@ -311,6 +311,12 @@ public class SolrIndexController {
         return commonUtil.findAllInstitutionCodesExceptSupportInstitution();
     }
 
+    @GetMapping(value = "/solrIndexer/cgds")
+    @ResponseBody
+    public List<String> getCgd() {
+        return commonUtil.getCgds();
+    }
+
     /**
      * This method gets solr index service.
      *

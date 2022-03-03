@@ -4,6 +4,7 @@ import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;
 import org.recap.model.jpa.ItemEntity;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -258,6 +259,9 @@ public interface BibliographicDetailsRepository extends BaseRepository<Bibliogra
     @Query(value = "SELECT count(distinct BIB) FROM BibliographicEntity as BIB WHERE BIB.owningInstitutionId in (:owningInstitutionIds) and BIB.lastUpdatedDate BETWEEN :lastUpdatedDateFrom and :lastUpdatedDateTo")
     Long getCountOfBibBasedOnDateRange(@Param("owningInstitutionIds") List<Integer> owningInstitutionIds, @Param("lastUpdatedDateFrom") Date lastUpdatedDateFrom, @Param("lastUpdatedDateTo") Date lastUpdatedDateTo);
 
+
+    @Query(value = "SELECT COUNT(DISTINCT a.BIBLIOGRAPHIC_ID) FROM BIBLIOGRAPHIC_T AS a INNER JOIN BIBLIOGRAPHIC_ITEM_T AS b INNER JOIN ITEM_T AS c ON a.BIBLIOGRAPHIC_ID= b.BIBLIOGRAPHIC_ID AND b.ITEM_ID = c.ITEM_ID AND a.OWNING_INST_ID =?1 AND c.OWNING_INST_ID =?1 AND c.COLLECTION_GROUP_ID =?2",nativeQuery = true)
+    Long getCountOfBibBasedOnInstitutionAndCGD(Integer owningInstitutionId, Integer cgdId);
     /**
      * Gets bibs based on bib ids.
      *
@@ -320,4 +324,8 @@ public interface BibliographicDetailsRepository extends BaseRepository<Bibliogra
     @Query(value = "update bibliographic_t AS a inner JOIN (select distinct(b1.MATCHING_IDENTITY) from bibliographic_t b1, bibliographic_t b2 where b1.MATCH_SCORE <> b2.MATCH_SCORE and b1.MATCHING_IDENTITY = b2.MATCHING_IDENTITY and b1.BIBLIOGRAPHIC_ID in (:bibliographicIds) group by b1.MATCHING_IDENTITY ) AS b ON a.MATCHING_IDENTITY = b.MATCHING_IDENTITY and a.ANAMOLY_FLAG = 0 set ANAMOLY_FLAG = 1", nativeQuery = true)
     @Transactional
     int updateAnamolyFlagSecondForBibIds(@Param("bibliographicIds") List<Integer> bibIds);
+
+    @Query(value = "select * from bibliographic_t where BIBLIOGRAPHIC_ID in ( select BIBLIOGRAPHIC_ID from bibliographic_item_t where item_id in ( select item_id from item_t where OWNING_INST_ID =?1 and COLLECTION_GROUP_ID =?1 ) ) and OWNING_INST_ID =?2", nativeQuery = true)
+    Page<BibliographicEntity> findByOwningInstitutionIdAndCGD(Pageable pageable, Integer owningInstitutionId, Integer cgdId);
+
 }

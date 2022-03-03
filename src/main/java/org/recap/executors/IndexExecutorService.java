@@ -8,12 +8,15 @@ import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.admin.SolrAdmin;
+import org.recap.model.jpa.CollectionGroupEntity;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.solr.Bib;
 import org.recap.model.solr.SolrIndexRequest;
+import org.recap.repository.jpa.CollectionGroupDetailsRepository;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.solr.main.BibSolrCrudRepository;
 import org.recap.repository.solr.temp.BibCrudRepositoryMultiCoreSupport;
+import org.recap.util.CommonUtil;
 import org.recap.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,11 +60,17 @@ public abstract class IndexExecutorService {
     @Autowired
     InstitutionDetailsRepository institutionDetailsRepository;
 
+    @Autowired
+    CollectionGroupDetailsRepository collectionGroupDetailsRepository;
+
     /**
      * The Bib solr crud repository.
      */
     @Autowired
     BibSolrCrudRepository bibSolrCrudRepository;
+
+    @Autowired
+    CommonUtil  commonUtil;
 
     /**
      * The Solr server protocol.
@@ -109,6 +118,7 @@ public abstract class IndexExecutorService {
         String owningInstitutionCode = solrIndexRequest.getOwningInstitutionCode();
         String fromDate = solrIndexRequest.getDateFrom();
         Integer owningInstitutionId = null;
+        Integer cgdId = null;
         Date from = null;
         String coreName = solrCore;
         Integer totalBibsProcessed = 0;
@@ -159,7 +169,7 @@ public abstract class IndexExecutorService {
                         tempCoreName = coreNames.get(coreNum);
                         coreNum = coreNum < numThreads - 1 ? coreNum + 1 : 0;
                     }
-                    Callable callable = getCallable(tempCoreName, pageNum, docsPerThread, owningInstitutionId, from, null, null);
+                    Callable callable = getCallable(tempCoreName, pageNum, docsPerThread, owningInstitutionId, from, null, null,cgdId);
                     callables.add(callable);
                 }
 
@@ -236,10 +246,15 @@ public abstract class IndexExecutorService {
         Integer docsPerThread = solrIndexRequest.getNumberOfDocs();
         Integer commitIndexesInterval = solrIndexRequest.getCommitInterval();
         String partialIndexType = solrIndexRequest.getPartialIndexType();
+        String owningInstitutionCode = solrIndexRequest.getOwningInstitutionCode();
+        String cgdCode = solrIndexRequest.getCgd();
+        Integer owningInstitutionId = null;
+        Integer cgdId = null;
         Map<String, Object> partialIndexMap;
         String coreName = solrCore;
         Integer totalBibsProcessed = 0;
-
+        owningInstitutionId = commonUtil.findOwningInstitutionCode(owningInstitutionCode);
+        cgdId = commonUtil.findcgdId(cgdCode);
         try {
             ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
             partialIndexMap = populatePartialIndexMap(solrIndexRequest, partialIndexType);
@@ -265,7 +280,7 @@ public abstract class IndexExecutorService {
 
                 List<Callable<Integer>> callables = new ArrayList<>();
                 for (int pageNum = 0; pageNum < loopCount; pageNum++) {
-                    Callable callable = getCallable(coreName, pageNum, docsPerThread, null, null, partialIndexType, partialIndexMap);
+                    Callable callable = getCallable(coreName, pageNum, docsPerThread, owningInstitutionId, null, partialIndexType, partialIndexMap, cgdId);
                     callables.add(callable);
                 }
 
@@ -357,6 +372,9 @@ public abstract class IndexExecutorService {
                 }
                 partialIndexMap.put(ScsbConstants.DATE_RANGE_FROM, fromDate);
                 partialIndexMap.put(ScsbConstants.DATE_RANGE_TO, toDate);
+            } else if(partialIndexType.equalsIgnoreCase(ScsbConstants.CGD_TYPE)){
+                partialIndexMap.put(ScsbConstants.OWNING_INST,commonUtil.findOwningInstitutionCode(solrIndexRequest.getOwningInstitutionCode()));
+                partialIndexMap.put(ScsbConstants.CGD,commonUtil.findcgdId(solrIndexRequest.getCgd()));
             }
         }
         return partialIndexMap;
@@ -434,7 +452,8 @@ public abstract class IndexExecutorService {
      * @param partialIndexMap     the partial index map
      * @return the callable
      */
-    public abstract Callable getCallable(String coreName, int pageNum, int docsPerpage, Integer owningInstitutionId, Date fromDate, String partialIndexType, Map<String, Object> partialIndexMap);
+    public abstract Callable getCallable(String coreName, int pageNum, int docsPerpage, Integer owningInstitutionId, Date fromDate, String partialIndexType, Map<String, Object> partialIndexMap,Integer cgdId);
+
 
     /**
      * This method gets the total doc count.

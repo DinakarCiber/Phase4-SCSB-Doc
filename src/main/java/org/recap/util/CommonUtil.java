@@ -363,6 +363,24 @@ public class CommonUtil {
         return collectionGroupMap;
     }
 
+    public List<String> getCgds(){
+        List<CollectionGroupEntity> collectionGroupEntities = collectionGroupDetailsRepository.findAll();
+        return pullCGDCodesList(collectionGroupEntities);
+    }
+
+    public List<String> pullCGDCodesList(List<CollectionGroupEntity> collectionGroupEntities) {
+        List<String> cgdCodesList = new ArrayList();
+        Iterator var3 = collectionGroupEntities.iterator();
+
+        while(var3.hasNext()) {
+            CollectionGroupEntity collectionGroupEntity = (CollectionGroupEntity)var3.next();
+            if (!collectionGroupEntity.getCollectionGroupCode().equalsIgnoreCase("NA")) {
+                cgdCodesList.add(collectionGroupEntity.getCollectionGroupCode());
+            }
+        }
+        return cgdCodesList;
+    }
+
     /**
      * Build Solr Documents for Query By Doc Type
      * @param solrQueryForDocType
@@ -430,5 +448,24 @@ public class CommonUtil {
     public Object convertToDto(Object object, Class<?> type) {
         return modelMapper.map(object, type);
     }
-
+    public Integer findOwningInstitutionCode(String owningInstitutionCode) {
+        Integer owningInstitutionId = null;
+        if (owningInstitutionCode != null && StringUtils.isNotBlank(owningInstitutionCode)) {
+            InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(owningInstitutionCode);
+            if (null != institutionEntity) {
+                owningInstitutionId = institutionEntity.getId();
+            }
+        }
+        return owningInstitutionId;
+    }
+    public Integer findcgdId(String cgdCode) {
+        Integer cgdId = null;
+        if (cgdCode != null && StringUtils.isNotBlank(cgdCode)) {
+            CollectionGroupEntity collectionGroupEntity = collectionGroupDetailsRepository.findByCollectionGroupCode(cgdCode);
+            if (null != collectionGroupEntity) {
+                cgdId = collectionGroupEntity.getId();
+            }
+        }
+        return  cgdId;
+    }
 }

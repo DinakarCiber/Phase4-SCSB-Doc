@@ -48,9 +48,9 @@ public class BibItemIndexExecutorService extends IndexExecutorService {
      * @return
      */
     @Override
-    public Callable getCallable(String coreName, int pageNum, int docsPerPage, Integer owningInstitutionId, Date fromDate, String partialIndexType, Map<String, Object> partialIndexMap) {
+    public Callable getCallable(String coreName, int pageNum, int docsPerPage, Integer owningInstitutionId, Date fromDate, String partialIndexType, Map<String, Object> partialIndexMap,Integer cgdId) {
         return new BibItemIndexCallable(solrServerProtocol + solrUrl, coreName, pageNum, docsPerPage, bibliographicDetailsRepository, holdingsDetailsRepository,
-                owningInstitutionId, fromDate, producerTemplate, solrTemplate, partialIndexType, partialIndexMap, nonHoldingInstitutionList, commonUtil);
+                owningInstitutionId, fromDate, producerTemplate, solrTemplate, partialIndexType, partialIndexMap, nonHoldingInstitutionList, commonUtil, cgdId);
     }
 
     /**
@@ -90,6 +90,10 @@ public class BibItemIndexExecutorService extends IndexExecutorService {
                 Date dateFrom = (Date) partialIndexMap.get(ScsbConstants.DATE_RANGE_FROM);
                 Date dateTo = (Date) partialIndexMap.get(ScsbConstants.DATE_RANGE_TO);
                 count = bibliographicDetailsRepository.getCountOfBibBasedOnDateRange(owningInstitutionIdList, dateFrom, dateTo);
+            } else if(partialIndexType.equalsIgnoreCase(ScsbConstants.CGD_TYPE)){
+                Integer owninInstitutionId = (Integer) partialIndexMap.get(ScsbConstants.OWNING_INST);
+                Integer cgdId = (Integer) partialIndexMap.get(ScsbConstants.CGD);
+                count = bibliographicDetailsRepository.getCountOfBibBasedOnInstitutionAndCGD(owninInstitutionId,cgdId);
             }
         }
         return count.intValue();

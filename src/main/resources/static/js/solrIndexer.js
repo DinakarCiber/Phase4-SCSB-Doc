@@ -14,6 +14,11 @@ jQuery(document).ready(function ($) {
         partialIndex();
     });
 
+     $("#partialIndex-formTest").submit(function (event) {
+            event.preventDefault();
+            partialIndexTest();
+        });
+
     $("#reports-form").submit(function (event) {
         event.preventDefault();
         generateReport();
@@ -132,7 +137,23 @@ function partialIndex() {
     }, 2000);
     updatePartialIndexStatus();
 }
+function partialIndexTest(){
 
+    var $form = $("#partialIndex-formTest");
+    $("#submit").attr('disabled', 'disabled');
+    $.ajax({
+        url: $form.attr('action'),
+        type: 'post',
+        data: $form.serialize(),
+        success: function (response) {
+            $("#submit").removeAttr('disabled');
+            document.getElementById("partialIndexingStatusTest").value = response;
+        }
+    });
+    setTimeout(function(){
+    }, 2000);
+    updatePartialIndexStatusTest();
+}
 
 function updateFullIndexStatus() {
     var request = $.ajax({
@@ -153,6 +174,17 @@ function updatePartialIndexStatus() {
     });
     request.done(function (msg) {
         document.getElementById("partialIndexingStatus").value = msg;
+    });
+}
+
+function updatePartialIndexStatusTest() {
+    var request = $.ajax({
+        url: "solrIndexer/report",
+        type: "GET",
+        contentType: "application/json"
+    });
+    request.done(function (msg) {
+        document.getElementById("partialIndexingStatusTest").value = msg;
     });
 }
 
@@ -312,6 +344,10 @@ function showRequest() {
 function populateInstitutionForFullIndex() {
        getInstitutions('institutionCode');
 }
+function populateInstitutionForFullIndexCgd() {
+       getInstitutions('institutionCodeCgd');
+       getCgds('cgd');
+}
 function populateInstitutionForReports() {
        getInstitutions('reportInstitutionName');
 }
@@ -319,6 +355,20 @@ function getInstitutions(selectId) {
        $('#'+selectId).empty();
        var request = $.ajax({
             url: "/solrIndexer/institutions",
+            type: "GET",
+            contentType: "application/json"
+        });
+        request.done(function (response) {
+             $('#'+selectId).append('<option value="">ALL</option>');
+             $.each(response , function(index, val) {
+               $('#'+selectId).append('<option value="' + val + '">' + val+ '</option>');
+             });
+        });
+}
+function getCgds(selectId) {
+       $('#'+selectId).empty();
+       var request = $.ajax({
+            url: "/solrIndexer/cgds",
             type: "GET",
             contentType: "application/json"
         });

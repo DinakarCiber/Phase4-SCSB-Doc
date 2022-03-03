@@ -132,6 +132,7 @@ public final class ScsbConstants {
     public static final String BIB_ID_LIST = "BibIdList";
     public static final String BIB_ID_RANGE = "BibIdRange";
     public static final String DATE_RANGE = "DateRange";
+    public static final String CGD_TYPE = "CGD";
     public static final String FROM_DATE = "FromDate";
     public static final String BIB_ID_RANGE_FROM = "BibIdRangeFrom";
     public static final String BIB_ID_RANGE_TO = "BibIdRangeTo";
@@ -242,6 +243,7 @@ public final class ScsbConstants {
     public static final String EXCEPTION_TITLE_MATCH_EXPORT = "Exception Occured while pulling records for TitleMatchExportReports:: {}";
     public static final String SINGLE_MATCH_TITLE_EXCEPTION = "SingleMatch-TitleException";
     public static final String MATCH_SCORE = "MatchScore";
+    public static final String CGD = "cgd";
 
     public static class ServicePath {
         private ServicePath() {}
