@@ -71,7 +71,6 @@ public class SolrQueryBuilder {
 
     private String buildQueryForFilterGivenChild(String fieldName, List<String> values) {
         StringBuilder stringBuilder = new StringBuilder();
-
         for (Iterator<String> iterator = values.iterator(); iterator.hasNext(); ) {
             String value = iterator.next();
             stringBuilder.append(fieldName).append(":").append(value);
@@ -136,7 +135,7 @@ public class SolrQueryBuilder {
         StringBuilder stringBuilder = new StringBuilder();
         List<String> owningInstitutions = searchRecordsRequest.getOwningInstitutions();
         if (CollectionUtils.isNotEmpty(owningInstitutions)) {
-            stringBuilder.append(buildQueryForMatchChildReturnParent(ScsbCommonConstants.BIB_OWNING_INSTITUTION, owningInstitutions));
+            stringBuilder.append(buildQueryForFilterGivenChild(ScsbCommonConstants.BIB_OWNING_INSTITUTION, owningInstitutions));
         }
 
         List<String> materialTypes = searchRecordsRequest.getMaterialTypes();
