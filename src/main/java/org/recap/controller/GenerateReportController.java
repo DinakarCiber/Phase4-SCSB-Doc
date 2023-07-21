@@ -9,6 +9,7 @@ import org.recap.model.reports.TitleMatchedReport;
 import org.recap.model.solr.SolrIndexRequest;
 import org.recap.model.submitCollection.SubmitCollectionReport;
 import org.recap.report.ReportGenerator;
+import org.recap.util.AWSUtil;
 import org.recap.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.util.StopWatch;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,9 @@ import java.util.Date;
 @RestController
 @RequestMapping("/reportGeneration")
 public class GenerateReportController {
+
+    @Autowired
+    private AWSUtil awsUtil;
 
 
 
@@ -166,5 +171,11 @@ public class GenerateReportController {
     public ResponseEntity<TitleMatchedReport> titleMatchReportExportS3(@RequestBody TitleMatchedReport titleMatchedReport) throws ParseException {
         reportGenerator.getItemMatchReportExportS3(titleMatchedReport);
         return  new ResponseEntity<>(titleMatchedReport,HttpStatus.OK);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> titleMatchReportExport() throws ParseException {
+        awsUtil.copyFromAWSToLocal();
+        return  new ResponseEntity<>("OKAY",HttpStatus.OK);
     }
 }
