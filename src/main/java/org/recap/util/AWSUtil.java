@@ -47,10 +47,10 @@ public class AWSUtil {
         List<String> s3FileList = deleteDuplicateFiles();
         ProcessBuilder processBuilder = new ProcessBuilder();
         List<String> commandsList = new ArrayList<>();
-        commandsList.add("sudo aws s3 cp s3://scsb-test/HL-HD-Data-InitialAccession/ s3://scsb-test/matching-services --recursive --exclude \"*/*\"");
-        commandsList.add("sudo aws s3 cp s3://scsb-test/matching-services/ /data/matching-services/source-data --recursive --exclude \"*/*\"");
-        commandsList.add("sudo aws s3 cp s3://scsb-test/matching-services/ s3://scsb-test/matching-services/.done --recursive --exclude \"*/*\"");
-        commandsList.add("sudo aws s3 rm s3://scsb-test/matching-services/ --recursive --exclude \"*/*\"");
+        commandsList.add("aws s3 cp s3://scsb-test/HL-HD-Data-InitialAccession/ s3://scsb-test/matching-services --recursive --exclude \"*/*\"");
+        commandsList.add("aws s3 cp s3://scsb-test/matching-services/ /data/matching-services/source-data --recursive --exclude \"*/*\"");
+        commandsList.add("aws s3 cp s3://scsb-test/matching-services/ s3://scsb-test/matching-services/.done --recursive --exclude \"*/*\"");
+        commandsList.add("aws s3 rm s3://scsb-test/matching-services/ --recursive --exclude \"*/*\"");
 
         try {
             for (int i = 0; i < commandsList.size(); i++) {
