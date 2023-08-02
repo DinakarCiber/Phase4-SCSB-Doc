@@ -352,5 +352,16 @@ public final class ScsbConstants {
 
     public static final String OCOLC = "OCoLC";
 
+    public static final String MATCHING_SERVICES = "matching-services";
+    public static final String DATA = "/data/";
+    public static final String SOURCE_DATA = "source-data";
+    public static final String SLASH = "source-data";
+    public static final String EXCEPTION_MESSAGE = "exception occurred in copyFromAWSToLocal with message : {}";
+
+
+
+
+
+
     private ScsbConstants(){}
 }

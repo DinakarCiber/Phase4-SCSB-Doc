@@ -174,8 +174,12 @@ public class GenerateReportController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<String> titleMatchReportExport() throws ParseException {
-        awsUtil.copyFromAWSToLocal();
+    public ResponseEntity<String> awsFileDownload() throws ParseException {
+        try {
+            awsUtil.copyFromAWSToLocal();
+        } catch (Exception e) {
+            log.info("exception occurred awsFileDownload : {}",e.getMessage());
+        }
         return  new ResponseEntity<>("OKAY",HttpStatus.OK);
     }
 }
