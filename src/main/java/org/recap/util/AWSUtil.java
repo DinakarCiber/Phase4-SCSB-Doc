@@ -54,7 +54,7 @@ public class AWSUtil {
 
         try {
             for (int i = 0; i < commandsList.size(); i++) {
-                processBuilder.command("/bin/bash", "-c", commandsList.get(i));
+                processBuilder.command("sh", "-c", commandsList.get(i));
                 Process process = processBuilder.start();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
