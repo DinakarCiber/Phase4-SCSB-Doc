@@ -44,7 +44,7 @@ public class AWSUtil {
     private String s3BucketName;
 
     public void copyFromAWSToLocal() {
-        List<String> s3FileList = deleteDuplicateFiles();
+        //List<String> s3FileList = deleteDuplicateFiles();
         ProcessBuilder processBuilder = new ProcessBuilder();
         List<String> commandsList = new ArrayList<>();
         commandsList.add("aws s3 cp s3://scsb-test/HL-HD-Data-InitialAccession/ s3://scsb-test/matching-services --recursive --exclude \"*/*\"");
@@ -60,13 +60,14 @@ public class AWSUtil {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                     System.out.println(line);
+                     log.info(line);
                 }
                 int exitCode = process.waitFor();
-                System.out.println("\nExited with error code : " + exitCode);
+                log.info("completed with error code : " + exitCode);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("exception occurred : {}",e.fillInStackTrace());
+
         }
     }
 

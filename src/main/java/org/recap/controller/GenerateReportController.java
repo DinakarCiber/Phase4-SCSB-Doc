@@ -173,12 +173,12 @@ public class GenerateReportController {
         return  new ResponseEntity<>(titleMatchedReport,HttpStatus.OK);
     }
 
-    @GetMapping("/test")
+    @GetMapping("/s3-to-local-data")
     public ResponseEntity<String> awsFileDownload() throws ParseException {
         try {
             awsUtil.copyFromAWSToLocal();
         } catch (Exception e) {
-            log.info("exception occurred awsFileDownload : {}",e.getMessage());
+            log.info("exception occurred awsFileDownload : {}",e.fillInStackTrace());
         }
         return  new ResponseEntity<>("OKAY",HttpStatus.OK);
     }
