@@ -9,11 +9,11 @@ import org.recap.model.solr.Item;
 public class ItemRootValueResolver implements ItemValueResolver {
     @Override
     public Boolean isInterested(String field) {
-        return "_root_".equals(field);
+        return "_version_".equals(field);
     }
 
     @Override
     public void setValue(Item item, Object value) {
-        item.setRoot((String)value);
+        item.setVersion(String.valueOf(value));
     }
 }

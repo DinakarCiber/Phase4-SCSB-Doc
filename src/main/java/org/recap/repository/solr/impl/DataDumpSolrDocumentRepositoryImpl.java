@@ -21,7 +21,7 @@ import org.recap.model.search.resolver.impl.bib.BibIdValueResolver;
 import org.recap.model.search.resolver.impl.bib.DocTypeValueResolver;
 import org.recap.model.search.resolver.impl.bib.IdValueResolver;
 import org.recap.model.search.resolver.impl.bib.IsDeletedBibValueResolver;
-import org.recap.model.search.resolver.impl.bib.RootValueResolver;
+import org.recap.model.search.resolver.impl.bib.VersionValueResolver;
 import org.recap.model.search.resolver.impl.item.IsDeletedItemValueResolver;
 import org.recap.model.search.resolver.impl.item.ItemBibIdValueResolver;
 import org.recap.model.search.resolver.impl.item.ItemIdValueResolver;
@@ -245,7 +245,7 @@ public class DataDumpSolrDocumentRepositoryImpl implements CustomDocumentReposit
         boolean nonFullTreeInst = isIncrementalNonFullTreeInstitution(searchRecordsRequest);
         log.debug("nonFullTreeInst---->{}",nonFullTreeInst);
         String queryStringForMatchParentReturnChild = solrQueryBuilder.getQueryStringForMatchParentReturnChild(searchRecordsRequest);
-        String querForItemString = "_root_:" + getRootIds(bibItems) + and + ScsbCommonConstants.DOCTYPE + ":" + ScsbCommonConstants.ITEM + and
+        String querForItemString = "_version_:" + getRootIds(bibItems) + and + ScsbCommonConstants.DOCTYPE + ":" + ScsbCommonConstants.ITEM + and
                 + queryStringForMatchParentReturnChild + and + ScsbCommonConstants.IS_DELETED_ITEM + ":" + searchRecordsRequest.isDeleted() + and + ScsbConstants.ITEM_CATALOGING_STATUS + ":"
                 + ScsbCommonConstants.COMPLETE_STATUS;
         if((nonFullTreeInst && !isPartialFullDump(searchRecordsRequest.getFieldValue())) && searchRecordsRequest.getFieldName().contains(ScsbConstants.BIBITEM_LASTUPDATED_DATE)){
@@ -258,8 +258,8 @@ public class DataDumpSolrDocumentRepositoryImpl implements CustomDocumentReposit
             for (Iterator<SolrDocument> iterator = solrDocuments.iterator(); iterator.hasNext(); ) {
                 SolrDocument solrDocument = iterator.next();
                 Item item = getItem(solrDocument);
-                if (getRootIds(bibItems).contains(item.getRoot())) {
-                    BibItem bibItem = findBibItem(bibItems, item.getRoot());
+                if (getRootIds(bibItems).contains(item.getVersion())) {
+                    BibItem bibItem = findBibItem(bibItems, item.getVersion());
                     if (null != bibItem) {
                         bibItem.addItem(item);
                     }
@@ -283,7 +283,7 @@ public class DataDumpSolrDocumentRepositoryImpl implements CustomDocumentReposit
     private static BibItem findBibItem(List<BibItem> bibItems, String root) {
         for (Iterator<BibItem> iterator = bibItems.iterator(); iterator.hasNext(); ) {
             BibItem bibItem = iterator.next();
-            if(bibItem.getRoot() != null && bibItem.getRoot().equals(root)){
+            if(bibItem.getVersion() != null && bibItem.getVersion().equals(root)){
                 return bibItem;
             }
         }
@@ -295,7 +295,7 @@ public class DataDumpSolrDocumentRepositoryImpl implements CustomDocumentReposit
         rootIds.append("(");
         for (Iterator<BibItem> iterator = bibItems.iterator(); iterator.hasNext(); ) {
             BibItem bibItem = iterator.next();
-            rootIds.append(bibItem.getRoot());
+            rootIds.append(bibItem.getVersion());
             if(iterator.hasNext()){
                 rootIds.append(or);
             }
@@ -374,7 +374,7 @@ public class DataDumpSolrDocumentRepositoryImpl implements CustomDocumentReposit
     public List<BibValueResolver> getBibValueResolversForDataDump() {
         if (null == bibValueResolvers) {
             bibValueResolvers = new ArrayList<>();
-            bibValueResolvers.add(new RootValueResolver());
+            bibValueResolvers.add(new VersionValueResolver());
             bibValueResolvers.add(new BibIdValueResolver());
             bibValueResolvers.add(new DocTypeValueResolver());
             bibValueResolvers.add(new IdValueResolver());

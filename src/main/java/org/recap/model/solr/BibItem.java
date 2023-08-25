@@ -122,7 +122,7 @@ public class BibItem {
     @Field("MAQualifier")
     private  Integer maQualifier;
 
-    private String root;
+    private String version;
 
     private List<Item> items = new ArrayList<>();
 

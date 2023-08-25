@@ -129,7 +129,7 @@ public class BibSolrDocumentRepositoryImpl implements CustomDocumentRepository {
 
     private List<BibItem> getBibItemsAndHoldings(Item item, boolean isDeleted, String catalogingStatus) {
         List<BibItem> bibItems = new ArrayList<>();
-        SolrQuery solrQueryForBib = solrQueryBuilder.getSolrQueryForBibItem("_root_:" + item.getRoot());
+        SolrQuery solrQueryForBib = solrQueryBuilder.getSolrQueryForBibItem("_version_:" + item.getVersion());
         try {
             SolrDocumentList solrDocuments = commonUtil.getSolrDocumentsByDocType(solrQueryForBib, solrTemplate);
             BibItem bibItem = new BibItem();
@@ -174,7 +174,7 @@ public class BibSolrDocumentRepositoryImpl implements CustomDocumentRepository {
      * @param catalogingStatus the cataloging status
      */
     public void populateItemHoldingsInfo(BibItem bibItem, boolean isDeleted, String catalogingStatus) {
-        SolrQuery solrQueryForItem = solrQueryBuilder.getSolrQueryForBibItem("_root_:" + bibItem.getRoot());
+        SolrQuery solrQueryForItem = solrQueryBuilder.getSolrQueryForBibItem("_version_:" + bibItem.getVersion());
         try {
             SolrDocumentList solrDocuments = commonUtil.getSolrDocumentsByDocType(solrQueryForItem, solrTemplate);
             for (Iterator<SolrDocument> iterator = solrDocuments.iterator(); iterator.hasNext(); ) {
