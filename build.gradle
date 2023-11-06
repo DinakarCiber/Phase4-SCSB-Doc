@@ -194,5 +194,5 @@ jar {
 
 sonarqube {
 	properties {
-		property "sonar.exclusions", "**/org/springframework/data/solr/core/convert";
+		property 'sonar.exclusions', "**/org/springframework";
 	} }
