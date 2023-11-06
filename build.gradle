@@ -50,7 +50,6 @@ repositories {
 	mavenCentral()
 }
 
-
 dependencies {
 	implementation fileTree(dir: '/data/commonjar', include: '*2.6.jar')
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -192,3 +191,8 @@ jar {
 	enabled = false
 	archiveClassifier = '' //use empty string
 }
+
+sonarqube {
+	properties {
+		property "sonar.exclusions", "**/org/springframework/data/solr/core/convert";
+	} }
