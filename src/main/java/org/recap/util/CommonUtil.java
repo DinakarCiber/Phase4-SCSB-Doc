@@ -387,7 +387,7 @@ public class CommonUtil {
      * @throws SolrServerException
      * @throws IOException
      */
-    public SolrDocumentList getSolrDocumentsByDocType(SolrQuery solrQueryForDocType, SolrTemplate solrTemplate) throws SolrServerException, IOException {
+    /*public SolrDocumentList getSolrDocumentsByDocType(SolrQuery solrQueryForDocType, SolrTemplate solrTemplate) throws SolrServerException, IOException {
         QueryResponse queryResponse;
         queryResponse = solrTemplate.getSolrClient().query(solrQueryForDocType);
         SolrDocumentList solrDocuments = queryResponse.getResults();
@@ -397,6 +397,20 @@ public class CommonUtil {
             solrDocuments = queryResponse.getResults();
         }
         return solrDocuments;
+    }*/
+
+    public SolrDocumentList getSolrDocumentsByDocType(SolrQuery solrQueryForDocType, SolrTemplate solrTemplate) throws SolrServerException, IOException {
+        QueryResponse queryResponse;
+        queryResponse = solrTemplate.getSolrClient().query(solrQueryForDocType);
+        SolrDocumentList solrDocuments = queryResponse.getResults();
+        if (solrDocuments.getNumFound() > 10) {
+            long startTime = System.currentTimeMillis();
+            solrQueryForDocType.setRows((int) solrDocuments.getNumFound());
+            queryResponse = solrTemplate.getSolrClient().query(solrQueryForDocType);
+            solrDocuments = queryResponse.getResults();
+            long endTime = System.currentTimeMillis();
+            log.info("Time taken to fetch  ", solrDocuments.getNumFound(), (endTime - startTime) / 1000);
+        }
     }
 
     public List<String> getAllInstitutionCodes() {
