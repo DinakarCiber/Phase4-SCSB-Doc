@@ -4,9 +4,9 @@ import org.recap.model.search.resolver.BibValueResolver;
 import org.recap.model.solr.BibItem;
 
 /**
- * Created by peris on 9/29/16.
+ * @author Dinakar N created on 21/08/23
  */
-public class RootValueResolver implements BibValueResolver {
+public class VersionValueResolver implements BibValueResolver {
     @Override
     public Boolean isInterested(String field) {
         return "_version_".equalsIgnoreCase(field);

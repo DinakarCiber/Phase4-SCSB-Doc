@@ -39,7 +39,7 @@ import org.recap.model.search.resolver.impl.bib.OwningInstitutionValueResolver;
 import org.recap.model.search.resolver.impl.bib.PublicationDateValueResolver;
 import org.recap.model.search.resolver.impl.bib.PublicationPlaceValueResolver;
 import org.recap.model.search.resolver.impl.bib.PublisherValueResolver;
-import org.recap.model.search.resolver.impl.bib.RootValueResolver;
+import org.recap.model.search.resolver.impl.bib.VersionValueResolver;
 import org.recap.model.search.resolver.impl.bib.SubjectValueResolver;
 import org.recap.model.search.resolver.impl.bib.TitleDisplayValueResolver;
 import org.recap.model.search.resolver.impl.bib.TitleMatchValueResolver;
@@ -149,7 +149,7 @@ public class CommonUtil {
     public List<BibValueResolver> getBibValueResolvers() {
         if (null == bibValueResolvers) {
             bibValueResolvers = new ArrayList<>();
-            bibValueResolvers.add(new RootValueResolver());
+            bibValueResolvers.add(new VersionValueResolver());
             bibValueResolvers.add(new AuthorDisplayValueResolver());
             bibValueResolvers.add(new AuthorSearchValueResolver());
             bibValueResolvers.add(new BibIdValueResolver());

@@ -97,5 +97,5 @@ public class Item {
     @Field("ImsLocation")
     private String imsLocation;
 
-    private String root;
+    private String version;
 }
