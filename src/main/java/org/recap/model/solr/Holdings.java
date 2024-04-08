@@ -48,5 +48,5 @@ public class Holdings {
     @Field("IsDeletedHoldings")
     private boolean isDeletedHoldings = false;
 
-    private String root;
+    private String version;
 }

@@ -59,7 +59,7 @@ public class SolrAdmin {
             String dataDir = solrHome + coreName + File.separator + "data";
 
             coreAdminRequestCreate.setCoreName(coreName);
-            coreAdminRequestCreate.setConfigSet("recap_config");
+            coreAdminRequestCreate.setConfigSet("_default");
             coreAdminRequestCreate.setInstanceDir(solrHome + File.separator + coreName);
             coreAdminRequestCreate.setDataDir(dataDir);
 

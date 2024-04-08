@@ -249,7 +249,7 @@ public class SolrIndexController {
             String bibliographicId = idMapToRemoveIndex.get("BibId");
             String holdingId = idMapToRemoveIndex.get("HoldingId");
             String itemId = idMapToRemoveIndex.get("ItemId");
-            String root = idMapToRemoveIndex.get("_root_");
+            String root = idMapToRemoveIndex.get("_version_");
             // Scenario : Bound-with - when a bib is unlinked to an item, the relationship between the bib and its holdings and item should be removed from solr.
             // Root value is used to delete the associated holdings and item for that bib.
             try {
